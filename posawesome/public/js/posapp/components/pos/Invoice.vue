@@ -160,7 +160,7 @@
                       v-model.number="item.posa_special_rate"
                       type="number"
                       :prefix="invoice_doc.currency"
-                      @change="calc_prices(item, $event)"
+                      @change="set_rate(item, $event)"
                       id="rate"
                       :disabled="
                         !!item.posa_is_offer ||
@@ -184,7 +184,7 @@
                       v-model.number="item.posa_special_discount"
                       type="number"
                       :prefix="invoice_doc.currency"
-                      @change="calc_prices(item, $event)"
+                      @change="set_rate(item, $event)"
                       id="rate"
                       :disabled="
                         !!item.posa_is_offer ||
@@ -837,7 +837,7 @@ export default {
             this.items.unshift(new_item);
           }
         }
-        this.set_serial_no(cur_item)
+        this.set_serial_no(cur_item);
       }
       this.$forceUpdate();
     },
@@ -870,6 +870,8 @@ export default {
       new_item.posa_notes = '';
       new_item.posa_delivery_date = '';
       new_item.posa_row_id = this.makeid(20);
+      new_item.posa_special_rate = item.rate;
+      new_item.posa_special_discount = 0;
       if (
         (!this.pos_profile.posa_auto_set_batch && new_item.has_batch_no) ||
         new_item.has_serial_no
@@ -1022,6 +1024,8 @@ export default {
           posa_notes: item.posa_notes,
           posa_delivery_date: item.posa_delivery_date,
           price_list_rate: item.price_list_rate,
+          posa_special_rate: item.posa_special_rate,
+          posa_special_discount: item.posa_special_discount,
         };
         items_list.push(new_item);
       });
@@ -1299,6 +1303,8 @@ export default {
             serial_no: item.serial_no,
             batch_no: item.batch_no,
             is_stock_item: item.is_stock_item,
+            posa_special_discount: item.posa_special_discount,
+            posa_special_rate: item.posa_special_rate,
           },
         },
         callback: function (r) {
@@ -1413,6 +1419,11 @@ export default {
         this.additional_discount_percentage = 0;
         this.discount_amount = 0;
       }
+    },
+
+    set_rate(item, value, $event) {
+      item.rate = flt(item.posa_special_rate - item.posa_special_discount);
+      item.discount_amount = flt(item.price_list_rate - item.rate);
     },
 
     calc_prices(item, value, $event) {
@@ -2128,6 +2139,7 @@ export default {
       new_item.posa_is_replace = null;
       new_item.posa_notes = '';
       new_item.posa_delivery_date = '';
+      new_item.posa_special_discount = 0;
       new_item.is_free_item =
         (offer.discount_type === 'Rate' && !offer.rate) ||
         (offer.discount_type === 'Discount Percentage' &&
@@ -2141,6 +2153,7 @@ export default {
           offer.discount_percentage == 0)
           ? 0
           : item.rate;
+      new_item.posa_special_rate = new_item.price_list_rate;
       if (
         (!this.pos_profile.posa_auto_set_batch && new_item.has_batch_no) ||
         new_item.has_serial_no
