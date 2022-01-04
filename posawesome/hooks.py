@@ -221,6 +221,8 @@ fixtures = [
                     "POS Profile-posa_allow_customer_purchase_order",
                     "POS Profile-posa_allow_print_last_invoice",
                     "POS Profile-posa_display_additional_notes",
+                    "Sales Invoice Item-posa_special_rate",
+                    "Sales Invoice Item-posa_special_discount"
                 ),
             ]
         ],

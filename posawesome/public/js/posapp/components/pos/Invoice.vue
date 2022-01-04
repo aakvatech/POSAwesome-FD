@@ -154,6 +154,54 @@
                       dense
                       outlined
                       color="indigo"
+                      :label="frappe._('Special Rate')"
+                      background-color="white"
+                      hide-details
+                      v-model.number="item.posa_special_rate"
+                      type="number"
+                      :prefix="invoice_doc.currency"
+                      @change="calc_prices(item, $event)"
+                      id="rate"
+                      :disabled="
+                        !!item.posa_is_offer ||
+                        !!item.posa_is_replace ||
+                        !!item.posa_offer_applied ||
+                        !pos_profile.posa_allow_user_to_edit_rate ||
+                        !!invoice_doc.is_return
+                          ? true
+                          : false
+                      "
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="4">
+                    <v-text-field
+                      dense
+                      outlined
+                      color="indigo"
+                      :label="frappe._('Special Discount')"
+                      background-color="white"
+                      hide-details
+                      v-model.number="item.posa_special_discount"
+                      type="number"
+                      :prefix="invoice_doc.currency"
+                      @change="calc_prices(item, $event)"
+                      id="rate"
+                      :disabled="
+                        !!item.posa_is_offer ||
+                        !!item.posa_is_replace ||
+                        !!item.posa_offer_applied ||
+                        !pos_profile.posa_allow_user_to_edit_rate ||
+                        !!invoice_doc.is_return
+                          ? true
+                          : false
+                      "
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="4">
+                    <v-text-field
+                      dense
+                      outlined
+                      color="indigo"
                       :label="frappe._('Rate')"
                       background-color="white"
                       hide-details
